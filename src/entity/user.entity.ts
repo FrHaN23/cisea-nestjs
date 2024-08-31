@@ -7,13 +7,14 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  BaseEntity,
 } from 'typeorm';
 import { District } from './district.entity';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @CreateDateColumn()
   created_at: Date;

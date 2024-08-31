@@ -12,7 +12,7 @@ import { User } from './user.entity';
 @Entity()
 export class District {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @CreateDateColumn()
   created_at: Date;

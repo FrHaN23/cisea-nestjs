@@ -1,4 +1,4 @@
-import { Catagory } from 'src/entity/catagory.entity';
+import { Category } from 'src/entity/category.entity';
 import { District } from 'src/entity/district.entity';
 import { User } from 'src/entity/user.entity';
 import { DataSource } from 'typeorm';
@@ -9,12 +9,12 @@ export const databaseProviders = [
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'mssql',
-        host: 'localhost',
-        port: 1433,
-        username: 'sa',
-        password: 'Sqls2022!',
-        database: 'csie',
-        entities: [User, Catagory, District],
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT, 10),
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        entities: [User, Category, District],
         synchronize: true,
         extra: {
           trustServerCertificate: true,
