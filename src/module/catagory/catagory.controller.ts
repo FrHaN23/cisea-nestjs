@@ -5,8 +5,8 @@ import { CatagoryServices } from './catagory.service';
 export class CatagoryController {
   constructor(private readonly Services: CatagoryServices) {}
 
-  @Get('')
-  getHello(): string {
-    return this.Services.getHello();
+  @Get()
+  getCatagories() {
+    return this.Services.getCatagories();
   }
 }

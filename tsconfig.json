@@ -17,5 +17,12 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
+  },
+  "paths": {
+    "@/*": ["./*"],
+    "@entity/*": ["./src/entity/*"],
+    "@dto/*": ["./src/dto/*"],
+    "@utils/*": ["./src/utils/*"],
   }
+  
 }
