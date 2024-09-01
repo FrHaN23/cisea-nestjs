@@ -25,17 +25,26 @@ export class CategoryController {
   @Get()
   getCategories(
     @Query('pagination') pagination: Pagination = { offset: 0, limit: 25 },
-  ): Promise<Category[]> {
+  ): Promise<any> {
     return this.Services.getCategories(pagination);
+  }
+  @Get('list')
+  getCategoriesList(): Promise<any> {
+    return this.Services.getCategoriesList();
+  }
+
+  @Get('list/:id/sub')
+  getCategoriesListChild(@Param('id', ParseIntPipe) id: number): Promise<any> {
+    return this.Services.getCategoriesListChild(id);
   }
 
   @Get(':id')
-  getCategory(@Param('id', ParseIntPipe) id: number): Promise<Category> {
+  getCategory(@Param('id', ParseIntPipe) id: number): Promise<any> {
     return this.Services.getCategory(id);
   }
 
   @Get(':id/details')
-  getCategoryChild(@Param('id', ParseIntPipe) id: number): Promise<Category> {
+  getCategoryChild(@Param('id', ParseIntPipe) id: number): Promise<any> {
     return this.Services.getCategoriesChildren(id);
   }
 
@@ -43,7 +52,7 @@ export class CategoryController {
   updateCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateData: Partial<Category>,
-  ): Promise<Category> {
+  ): Promise<any> {
     return this.Services.updateCategory(id, updateData);
   }
 

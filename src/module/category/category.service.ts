@@ -2,6 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from 'src/entity/category.entity';
 import { Pagination } from 'src/utils/const';
 import resp from 'src/utils/resp';
+import { IsNull } from 'typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 
 @Injectable()
@@ -27,6 +28,40 @@ export class CategoryServices {
     const res = {
       data: data[0],
       count: data[1],
+    };
+    return resp.ok(res);
+  }
+
+  async getCategoriesList(): Promise<any> {
+    const data = await this.repo.find({
+      where: {
+        parent_id: IsNull(),
+      },
+      select: {
+        id: true,
+        name: true,
+        parent_id: true,
+      },
+    });
+    const res = {
+      data: data,
+    };
+    console.log(res);
+    return resp.ok(res);
+  }
+
+  async getCategoriesListChild(parent_id: number): Promise<any> {
+    const data = await this.repo.find({
+      where: {
+        parent_id: parent_id,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+    const res = {
+      data: data,
     };
     return resp.ok(res);
   }

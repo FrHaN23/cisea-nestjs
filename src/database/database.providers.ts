@@ -1,5 +1,6 @@
 import { Category } from 'src/entity/category.entity';
 import { District } from 'src/entity/district.entity';
+import { Penerimaan } from 'src/entity/penerimaan.entity';
 import { User } from 'src/entity/user.entity';
 import { DataSource } from 'typeorm';
 
@@ -14,7 +15,7 @@ export const databaseProviders = [
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
-        entities: [User, Category, District],
+        entities: [User, Category, District, Penerimaan],
         synchronize: true,
         extra: {
           trustServerCertificate: true,

@@ -6,6 +6,7 @@ import { AuthModule } from 'src/module/auth/auth.module';
 import { CategoryModule } from '../category/category.module';
 import { DistrictModule } from '../district/district.module';
 import { UserModule } from '../users/users.module';
+import { PenerimaanModule } from '../penerimaan/Penerimaan.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserModule } from '../users/users.module';
     CategoryModule,
     DistrictModule,
     UserModule,
+    PenerimaanModule,
   ],
   controllers: [AppController],
   providers: [AppService],
