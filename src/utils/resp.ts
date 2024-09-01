@@ -1,6 +1,6 @@
 class Resp {
   public ok(data: any) {
-    return { data: data };
+    return { ...data };
   }
 
   public error(status: number, message: string, data?: any) {

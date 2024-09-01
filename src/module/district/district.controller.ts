@@ -22,9 +22,14 @@ export class CategoryController {
     const data = this.Services.createDistrict(body);
     return data;
   }
+  @Get('list')
+  getDistrictList(): Promise<any> {
+    const data = this.Services.getDistrictsList();
+    return data;
+  }
 
   @Get()
-  getCategories(
+  getDistricts(
     @Query('pagination') pagination: Pagination = { offset: 0, limit: 25 },
   ): Promise<any> {
     const data = this.Services.getDistricts(pagination);
@@ -32,12 +37,12 @@ export class CategoryController {
   }
 
   @Get(':id')
-  getCategory(@Param('id', ParseIntPipe) id: number): Promise<any> {
+  getDistrict(@Param('id', ParseIntPipe) id: number): Promise<any> {
     return this.Services.getDistrict(id);
   }
 
   @Put(':id')
-  updateCategory(
+  updateDistrict(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateData: Partial<District>,
   ): Promise<any> {
@@ -45,7 +50,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  deleteCategory(@Param('id', ParseIntPipe) id: number): Promise<any> {
+  deleteDistrict(@Param('id', ParseIntPipe) id: number): Promise<any> {
     return this.Services.deleteDistrict(id);
   }
 }

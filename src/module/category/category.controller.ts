@@ -34,6 +34,11 @@ export class CategoryController {
     return this.Services.getCategory(id);
   }
 
+  @Get(':id/details')
+  getCategoryChild(@Param('id', ParseIntPipe) id: number): Promise<Category> {
+    return this.Services.getCategoriesChildren(id);
+  }
+
   @Put(':id')
   updateCategory(
     @Param('id', ParseIntPipe) id: number,

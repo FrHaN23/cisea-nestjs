@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from 'src/entity/category.entity';
 import { Pagination } from 'src/utils/const';
+import resp from 'src/utils/resp';
 import { Repository } from 'typeorm/repository/Repository';
 
 @Injectable()
@@ -15,17 +16,22 @@ export class CategoryServices {
     return this.repo.save(category);
   }
 
-  async getCategories(paginate: Pagination): Promise<Category[]> {
-    return this.repo.find({
+  async getCategories(paginate: Pagination): Promise<any> {
+    const data = await this.repo.findAndCount({
       skip: paginate.offset,
       take: paginate.limit,
       order: {
         created_at: 'DESC',
       },
     });
+    const res = {
+      data: data[0],
+      count: data[1],
+    };
+    return resp.ok(res);
   }
 
-  async getCategory(id: number): Promise<Category> {
+  async getCategory(id: number): Promise<any> {
     const category = await this.repo.findOne({
       where: {
         id: id,
@@ -38,7 +44,19 @@ export class CategoryServices {
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
-    return category;
+    return resp.ok({ data: category });
+  }
+
+  async getCategoriesChildren(id: number): Promise<any> {
+    const category = await this.repo.find({
+      where: {
+        parent_id: id,
+      },
+    });
+    if (!category) {
+      throw new NotFoundException(`Category with ID ${id} not found`);
+    }
+    return resp.ok({ data: category });
   }
 
   async updateCategory(

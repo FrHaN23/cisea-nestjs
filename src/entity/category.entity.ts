@@ -31,7 +31,7 @@ export class Category {
   kota?: number;
 
   @Column({ type: 'decimal', nullable: true })
-  kab?: number;
+  provinsi?: number;
 
   @Column({ type: 'decimal', nullable: true })
   pusat?: number;

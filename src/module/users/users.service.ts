@@ -1,39 +1,49 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { District } from 'src/entity/district.entity';
+import { User } from 'src/entity/user.entity';
 import { Pagination } from 'src/utils/const';
+import { hashPassword } from 'src/utils/password.utils';
 import resp from 'src/utils/resp';
 import { Repository } from 'typeorm/repository/Repository';
 
 @Injectable()
-export class DistrictServices {
+export class UserService {
   constructor(
-    @Inject('DISTRICT_REPOSITORY')
-    private readonly repo: Repository<District>,
+    @Inject('USER_REPOSITORY')
+    private readonly repo: Repository<User>,
   ) {}
 
-  async createDistrict(body: Partial<District>): Promise<any> {
-    const district = this.repo.create(body);
-    const data = await this.repo.save(district).catch((e) => {
+  async createUser(body: Partial<User>): Promise<any> {
+    if (!body.username || !body.password) {
+      throw new BadRequestException();
+    }
+    const hashedPassword = await hashPassword(body.password);
+    body.password = hashedPassword;
+    const user = this.repo.create(body);
+    const data = await this.repo.save(user).catch((e) => {
       console.log(e);
       throw new InternalServerErrorException();
     });
     if (!data) {
-      throw new InternalServerErrorException();
+      throw new NotFoundException();
     }
     return resp.ok(null);
   }
 
-  async getDistricts(paginate: Pagination): Promise<any> {
+  async getUsers(paginate: Pagination): Promise<any> {
     const data = await this.repo.findAndCount({
       skip: paginate.offset,
       take: paginate.limit,
       order: {
         created_at: 'DESC',
+      },
+      relations: {
+        district: true,
       },
     });
     const res = {
@@ -43,20 +53,7 @@ export class DistrictServices {
     return resp.ok(res);
   }
 
-  async getDistrictsList(): Promise<any> {
-    const data = await this.repo.find({
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-    const res = {
-      data: data,
-    };
-    return resp.ok(res);
-  }
-
-  async getDistrict(id: number): Promise<any> {
+  async getUser(id: number): Promise<any> {
     const district = await this.repo.findOne({
       where: {
         id: id,
@@ -65,14 +62,16 @@ export class DistrictServices {
     if (!district) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return resp.ok({ data: district });
+    return resp.ok(district);
   }
 
-  async updateDistrict(
-    id: number,
-    updateData: Partial<District>,
-  ): Promise<any> {
+  async updateUser(id: number, updateData: Partial<User>): Promise<any> {
     delete updateData.id;
+    if (!updateData.username || !updateData.password) {
+      throw new BadRequestException();
+    }
+    const hashedPassword = await hashPassword(updateData.password);
+    updateData.password = hashedPassword;
     const district = await this.repo.findOne({
       where: {
         id: id,
@@ -92,7 +91,7 @@ export class DistrictServices {
     return resp.ok(null);
   }
 
-  async deleteDistrict(id: number): Promise<void> {
+  async deleteUser(id: number): Promise<void> {
     const district = await this.repo.findOne({
       where: {
         id: id,
