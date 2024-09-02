@@ -19,7 +19,6 @@ export class PenerimaanService {
 
   async createPenerimaan(body: Partial<Penerimaan>): Promise<any> {
     const penerimaan = this.repo.create(body);
-    console.log(penerimaan);
     const data = await this.repo.save(penerimaan).catch((e) => {
       console.log(e);
       throw new InternalServerErrorException();
