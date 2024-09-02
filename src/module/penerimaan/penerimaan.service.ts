@@ -9,6 +9,9 @@ import { User } from 'src/entity/user.entity';
 import { Pagination } from 'src/utils/const';
 import resp from 'src/utils/resp';
 import { Repository } from 'typeorm/repository/Repository';
+import * as ExcelJS from 'exceljs';
+import * as dayjs from 'dayjs';
+import { Response } from 'express';
 
 @Injectable()
 export class PenerimaanService {
@@ -105,5 +108,66 @@ export class PenerimaanService {
       },
     });
     await this.repo.softRemove(district);
+  }
+
+  async generateExcel(res: Response): Promise<void> {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('sheet 1');
+
+    worksheet.columns = [
+      { header: 'Date', key: 'date', width: 15 },
+      { header: 'Category', key: 'category', width: 20 },
+      { header: 'Value', key: 'value', width: 20 },
+      { header: 'Wilayah', key: 'wilayah', width: 15 },
+      { header: 'Kota', key: 'kota', width: 25 },
+      { header: 'Provinsi', key: 'provinsi', width: 25 },
+      { header: 'Pusat', key: 'pusat', width: 25 },
+    ];
+
+    const data = await this.repo.find({
+      order: {
+        created_at: 'DESC',
+      },
+      relations: {
+        district: true,
+        user: true,
+        category: true,
+      },
+    });
+
+    data.forEach((e, i) => {
+      const row = {
+        date: dayjs(e.date).format('YYYY, MMMM'),
+        No: i + 2,
+        category: e.category.name,
+        value: e.value,
+        district: e.district.name,
+        kota: (e.category.kota / 100) * e.value,
+        provinsi: (e.category.provinsi / 100) * e.value,
+        pusat: (e.category.pusat / 100) * e.value,
+      };
+      worksheet.addRow(row);
+    });
+
+    worksheet.eachRow((row, rowNumber) => {
+      row.eachCell((cell) => {
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      });
+
+      if (rowNumber === 1) {
+        row.font = { bold: true };
+      }
+    });
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=export_penerimaan.xlsx',
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
   }
 }

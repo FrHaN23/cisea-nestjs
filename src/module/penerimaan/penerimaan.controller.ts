@@ -8,11 +8,13 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { Pagination } from 'src/utils/const';
 import { User } from 'src/entity/user.entity';
 import { Penerimaan } from 'src/entity/penerimaan.entity';
 import { PenerimaanService } from './penerimaan.service';
+import { Response } from 'express';
 
 @Controller('penerimaan')
 export class PenerimaanController {
@@ -30,6 +32,11 @@ export class PenerimaanController {
   ): Promise<any> {
     const data = this.Services.getPenerimaans(pagination);
     return data;
+  }
+
+  @Get('export')
+  async downloadExcel(@Res() res: Response): Promise<void> {
+    await this.Services.generateExcel(res);
   }
 
   @Get('stats')
