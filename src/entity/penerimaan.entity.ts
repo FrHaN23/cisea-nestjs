@@ -5,8 +5,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   UpdateDateColumn,
-  OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { Category } from './category.entity';
 import { District } from './district.entity';
@@ -26,24 +26,27 @@ export class Penerimaan {
   @DeleteDateColumn()
   deleted_at?: Date;
 
+  @Column({ nullable: true })
+  date?: Date;
+
   @Column({ type: 'bigint' })
   value: number;
 
   @Column()
   category_id?: number;
-  @OneToOne(() => Category, { nullable: true })
+  @ManyToOne(() => Category, { nullable: true })
   @JoinColumn({ name: 'category_id' })
   category?: Category;
 
   @Column()
   district_id?: number;
-  @OneToOne(() => District, { nullable: true })
+  @ManyToOne(() => District, { nullable: true })
   @JoinColumn({ name: 'district_id' })
   district?: Category;
 
   @Column()
   user_id?: number;
-  @OneToOne(() => User, { nullable: true })
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user?: User;
 }

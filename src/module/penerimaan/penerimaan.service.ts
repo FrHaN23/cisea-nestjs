@@ -19,6 +19,7 @@ export class PenerimaanService {
 
   async createPenerimaan(body: Partial<Penerimaan>): Promise<any> {
     const penerimaan = this.repo.create(body);
+    console.log(penerimaan);
     const data = await this.repo.save(penerimaan).catch((e) => {
       console.log(e);
       throw new InternalServerErrorException();
@@ -47,6 +48,17 @@ export class PenerimaanService {
       count: data[1],
     };
     return resp.ok(res);
+  }
+
+  async getPenerimaansStat(year: number): Promise<any> {
+    const data = await this.repo
+      .createQueryBuilder('stat')
+      .leftJoinAndSelect('stat.district', 'district')
+      .leftJoinAndSelect('stat.user', 'user')
+      .leftJoinAndSelect('stat.category', 'category')
+      .where('YEAR(stat.date) = :year', { year })
+      .getMany();
+    return resp.ok({ data: data });
   }
 
   async getPenerimaan(id: number): Promise<any> {

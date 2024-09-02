@@ -5,9 +5,9 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   UpdateDateColumn,
-  OneToOne,
   JoinColumn,
   BaseEntity,
+  ManyToOne,
 } from 'typeorm';
 import { District } from './district.entity';
 
@@ -39,7 +39,7 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true })
   district_id?: number;
-  @OneToOne(() => District, { nullable: true })
+  @ManyToOne(() => District, { nullable: true })
   @JoinColumn({ name: 'district_id' })
   district?: District;
 }

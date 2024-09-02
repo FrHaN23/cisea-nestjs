@@ -46,7 +46,6 @@ export class CategoryServices {
     const res = {
       data: data,
     };
-    console.log(res);
     return resp.ok(res);
   }
 

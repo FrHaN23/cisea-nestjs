@@ -32,6 +32,12 @@ export class PenerimaanController {
     return data;
   }
 
+  @Get('stats')
+  getPenerimaansStats(@Query('year', ParseIntPipe) year: number): Promise<any> {
+    const data = this.Services.getPenerimaansStat(year);
+    return data;
+  }
+
   @Get(':id')
   getPenerimaan(@Param('id', ParseIntPipe) id: number): Promise<any> {
     return this.Services.getPenerimaan(id);

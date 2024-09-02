@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   UpdateDateColumn,
-  OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -26,6 +26,6 @@ export class District {
   @Column()
   name: string;
 
-  @OneToOne(() => User, (user) => user.district)
+  @OneToMany(() => User, (user) => user.district)
   user?: User;
 }
